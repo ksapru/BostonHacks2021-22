@@ -1,14 +1,13 @@
-import './App.css'; 
-import Navbar from './components/Navbar';
-import Webcam from 'react-webcam';
-
-function App() {
+import logo from './logo.svg';
+import './App.css';
+import Webcam from "react-webcam";
 
 
-  return ( 
-    
-      <div className="App">      
-      <Navbar></Navbar>
+function Webcam2() {
+
+
+return (
+  <div className="App">
   <header className="App-header">
     <Webcam
   
@@ -39,10 +38,8 @@ function App() {
       }}
     />
     </header>
- 
+  </div>
+  );
+}
 
-    </div>
-    );
-  }
-
-export default App;
+export default Webcam2;
