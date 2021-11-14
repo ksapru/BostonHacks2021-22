@@ -23,6 +23,7 @@ stream = p.open(
 
 # the AssemblyAI endpoint we're going to hit
 URL = "wss://api.assemblyai.com/v2/realtime/ws?sample_rate=16000"
+data = []
  
 async def send_receive():
    print(f'Connecting websocket to url ${URL}')
@@ -36,7 +37,7 @@ async def send_receive():
        print("Receiving SessionBegins ...")
        session_begins = await _ws.recv()
        print(session_begins)
-       data = []
+    #    data = []
        print("Sending messages ...")
        async def send():
            while True:
@@ -47,16 +48,16 @@ async def send_receive():
                    await _ws.send(json_data)
                except websockets.exceptions.ConnectionClosedError as e:
                    print(e)
-                   assert e.code == 4008
+                #    assert e.code == 4008
                    break
                except Exception as e:
                    assert False, "Not a websocket 4008 error"
                await asyncio.sleep(0.01)
-          
            return True
       
        async def receive():
-           while True:
+           count = 0
+           while count < 3:
                try:
                    result_str = await _ws.recv()
                    if json.loads(result_str)['message_type'] == 'FinalTranscript':
@@ -65,18 +66,22 @@ async def send_receive():
                     analysis = analyze(t)
                     if t == "":
                         print("empty input!")
+                        count += 1
                         continue
                     print(analysis)
                     data.append([t, analysis])
-                    print("data", data)
+                    # print("data", data)
                except websockets.exceptions.ConnectionClosedError as e:
                    print(e)
                    assert e.code == 4008
                    break
                except Exception as e:
                    assert False, "Not a websocket 4008 error"
+           print(data)
+           return True
       
        send_result, receive_result = await asyncio.gather(send(), receive())
 
-while True:
-    asyncio.run(send_receive())
+# while True:
+asyncio.run(send_receive())
+print(json.dumps(data, indent=2))
